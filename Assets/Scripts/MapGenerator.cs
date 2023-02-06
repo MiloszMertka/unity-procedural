@@ -60,6 +60,8 @@ public class MapGenerator : MonoBehaviour
     {
         Tilemap tilemap = GetComponent<Tilemap>();
         Vector3Int tilemapBasePosition = tilemap.WorldToCell(Vector3.zero);
+        tilemapBasePosition.x -= width / 2;
+        tilemapBasePosition.y -= height / 2;
         tilemap.ClearAllTiles();
 
         float[,] map = GeneratePerlinNoiseMap();
