@@ -18,13 +18,19 @@ public class MapGenerator : MonoBehaviour
 
     public Vector2Int offset;
 
+    public Tilemap nonWalkableTilemap;
+
     public GeneratorHeightRule[] generatorHeightRules;
+
+    [HideInInspector]
+    public MapGrid mapGrid;
 
     private static readonly int MIN_OCTAVE_OFFSET = -10000;
     private static readonly int MAX_OCTAVE_OFFSET = 10000;
 
     public void Start()
     {
+        mapGrid = new MapGrid(width, height);
         GenerateMap();
     }
 
@@ -71,9 +77,19 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < width; j++)
             {
                 var position = new Vector3Int(tilemapBasePosition.x + j, tilemapBasePosition.y + i);
-                Tile tile = GetTileByPercentHeight(map[i, j]);
+                GeneratorHeightRule heightRule = GetHeightRuleByPercentHeight(map[i, j]);
+                Tile tile = heightRule.tile;
+                bool walkable = heightRule.walkable;
 
                 tilemap.SetTile(position, tile);
+
+                if (!walkable)
+                {
+                    nonWalkableTilemap.SetTile(position, tile);
+                }
+
+                var gridPosition = new Vector2Int(j, i);
+                mapGrid.nodes[i, j] = new Node(position, walkable, gridPosition);
             }
         }
     }
@@ -153,17 +169,12 @@ public class MapGenerator : MonoBehaviour
         return map;
     }
 
-    private Tile GetTileByPercentHeight(float percentHeight)
+    private GeneratorHeightRule GetHeightRuleByPercentHeight(float percentHeight)
     {
         var heightRules = new List<GeneratorHeightRule>(generatorHeightRules);
         var heightRule = heightRules.Find((heightRule) => percentHeight <= heightRule.maxPercentHeight);
 
-        if (heightRule == null)
-        {
-            print(percentHeight);
-        }
-
-        return heightRule.tile;
+        return heightRule;
     }
 
     [System.Serializable]
@@ -173,5 +184,6 @@ public class MapGenerator : MonoBehaviour
 
         [Range(0, 1)]
         public float maxPercentHeight;
+        public bool walkable = true;
     }
 }
