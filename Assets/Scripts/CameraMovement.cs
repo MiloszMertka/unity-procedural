@@ -7,6 +7,12 @@ public class CameraMovement : MonoBehaviour
     [Range(0.01f, 1)]
     public float speedFactor = 0.1f;
 
+    [Range(0.01f, 3)]
+    public float zoomSpeedFactor = 0.1f;
+
+    public float minCameraSize = 10;
+    public float maxCameraSize = 20;
+
     private Camera mainCamera;
     private Vector3 previousMousePosition = Vector3.zero;
     private bool primaryMouseButtonDown = false;
@@ -19,6 +25,12 @@ public class CameraMovement : MonoBehaviour
     }
 
     public void LateUpdate()
+    {
+        MoveCamera();
+        SetCameraZoom();
+    }
+
+    private void MoveCamera()
     {
         if (Input.GetMouseButton(PRIMARY_MOUSE_BUTTON_CODE))
         {
@@ -39,5 +51,14 @@ public class CameraMovement : MonoBehaviour
         {
             primaryMouseButtonDown = false;
         }
+    }
+
+    private void SetCameraZoom()
+    {
+        float mouseScrollValue = Input.GetAxis("Mouse ScrollWheel");
+        float zoomValue = mouseScrollValue * zoomSpeedFactor;
+        float zoomedCameraSize = mainCamera.orthographicSize + zoomValue;
+
+        mainCamera.orthographicSize = Mathf.Clamp(zoomedCameraSize, minCameraSize, maxCameraSize);
     }
 }

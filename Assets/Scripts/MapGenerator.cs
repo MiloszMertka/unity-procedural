@@ -16,6 +16,8 @@ public class MapGenerator : MonoBehaviour
     public float lacunarity;
     public int seed;
 
+    public Vector2Int offset;
+
     public GeneratorHeightRule[] generatorHeightRules;
 
     private static readonly int MIN_OCTAVE_OFFSET = -10000;
@@ -93,8 +95,8 @@ public class MapGenerator : MonoBehaviour
 
                 for (int k = 0; k < octaves; k++)
                 {
-                    float x = (j / scale) * frequency + randomOctavesOffsets[k].x;
-                    float y = (i / scale) * frequency + randomOctavesOffsets[k].y;
+                    float x = (j / scale) * frequency + randomOctavesOffsets[k].x + offset.x;
+                    float y = (i / scale) * frequency + randomOctavesOffsets[k].y + offset.y;
 
                     float perlinNoiseSample = Mathf.PerlinNoise(x, y) * 2 - 1;
 
@@ -152,7 +154,7 @@ public class MapGenerator : MonoBehaviour
     private Tile GetTileByPercentHeight(float percentHeight)
     {
         var heightRules = new List<GeneratorHeightRule>(generatorHeightRules);
-        var heightRule = heightRules.Find((heightRule) => percentHeight >= heightRule.minPercentHeight && percentHeight <= heightRule.maxPercentHeight);
+        var heightRule = heightRules.Find((heightRule) => percentHeight <= heightRule.maxPercentHeight);
 
         if (heightRule == null)
         {
@@ -166,9 +168,6 @@ public class MapGenerator : MonoBehaviour
     public class GeneratorHeightRule
     {
         public Tile tile;
-
-        [Range(0, 1)]
-        public float minPercentHeight;
 
         [Range(0, 1)]
         public float maxPercentHeight;
