@@ -17,7 +17,7 @@ public class CameraMovement : MonoBehaviour
     private Vector3 previousMousePosition = Vector3.zero;
     private bool primaryMouseButtonDown = false;
 
-    private static readonly int PRIMARY_MOUSE_BUTTON_CODE = 0;
+    private const int PRIMARY_MOUSE_BUTTON_CODE = 0;
 
     public void Start()
     {

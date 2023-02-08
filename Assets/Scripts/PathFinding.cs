@@ -8,7 +8,7 @@ public class PathFinding : MonoBehaviour
 
     public void Start()
     {
-        MapGenerator mapGenerator = FindObjectOfType<MapGenerator>();
+        var mapGenerator = FindObjectOfType<MapGenerator>();
         mapGrid = mapGenerator.mapGrid;
     }
 

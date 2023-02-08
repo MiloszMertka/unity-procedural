@@ -40,4 +40,17 @@ public class MapGrid
 
         return neighbours;
     }
+
+    public Node GetNodeByPosition(Vector3Int position)
+    {
+        foreach (var node in nodes)
+        {
+            if (node.position == position)
+            {
+                return node;
+            }
+        }
+
+        return null;
+    }
 }
