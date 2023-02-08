@@ -17,8 +17,15 @@ public class PathFinding : MonoBehaviour
         Node source = GetNodeByPosition(sourcePosition);
         Node destination = GetNodeByPosition(destinationPosition);
 
-        CheckIfNodeIsNull(source);
-        CheckIfNodeIsNull(destination);
+        if (CheckIfNodeIsNull(source) || CheckIfNodeIsNull(destination))
+        {
+            return null;
+        }
+
+        if (!CheckIfNodeIsWalkable(source) || !CheckIfNodeIsWalkable(destination))
+        {
+            return null;
+        }
 
         List<Node> openSet = new List<Node>();
         ISet<Node> closedSet = new HashSet<Node>();
@@ -120,6 +127,17 @@ public class PathFinding : MonoBehaviour
             return true;
         }
 
+        return false;
+    }
+
+    private bool CheckIfNodeIsWalkable(Node node)
+    {
+        if (node.walkable)
+        {
+            return true;
+        }
+
+        Debug.LogError("Node is not walkable!");
         return false;
     }
 }

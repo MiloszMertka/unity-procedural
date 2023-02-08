@@ -28,7 +28,7 @@ public class MapGenerator : MonoBehaviour
     private static readonly int MIN_OCTAVE_OFFSET = -10000;
     private static readonly int MAX_OCTAVE_OFFSET = 10000;
 
-    public void Start()
+    public void Awake()
     {
         mapGrid = new MapGrid(width, height);
         GenerateMap();
