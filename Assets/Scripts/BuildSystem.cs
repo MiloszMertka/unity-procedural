@@ -7,12 +7,14 @@ public class BuildSystem : MonoBehaviour
     public Building building;
     private Grid grid;
     private MapGrid mapGrid;
+    private ResourcesSystem resourcesSystem;
 
     private const int PRIMARY_MOUSE_BUTTON_CODE = 0;
 
     public void Start()
     {
         grid = FindObjectOfType<Grid>();
+        resourcesSystem = FindObjectOfType<ResourcesSystem>();
         var mapGenerator = FindObjectOfType<MapGenerator>();
         mapGrid = mapGenerator.mapGrid;
     }
@@ -73,6 +75,11 @@ public class BuildSystem : MonoBehaviour
 
     private bool CheckIfBuildingCanBeBuilt()
     {
+        if (!CheckIfThereAreEnoughResources())
+        {
+            return false;
+        }
+
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int mouseCellPosition = grid.WorldToCell(mousePosition);
 
@@ -91,6 +98,21 @@ public class BuildSystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool CheckIfThereAreEnoughResources()
+    {
+        Building.Costs costs = building.costs;
+
+        if (resourcesSystem.planks >= costs.planksCost &&
+            resourcesSystem.steel >= costs.steelCost &&
+            resourcesSystem.chips >= costs.chipsCost &&
+            resourcesSystem.ferratium >= costs.ferratiumCost)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void Build()
